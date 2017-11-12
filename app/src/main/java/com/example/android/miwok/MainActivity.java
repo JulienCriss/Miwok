@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         numbersView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Create an explicit Intent
                 Intent numbersIntent = new Intent(view.getContext(), NumbersActivity.class);
                 startActivity(numbersIntent);
             }

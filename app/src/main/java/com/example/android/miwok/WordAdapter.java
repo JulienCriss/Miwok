@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Julien on 12.11.2017.
- * This class that can provide the layout for each list
+ * This class that can provide the layout for each list dynamically
  */
 
 public class WordAdapter extends ArrayAdapter<Word> {

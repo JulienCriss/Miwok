@@ -54,7 +54,7 @@ public class Word {
         this.mMiwokTranslation = miwokTranslation;
         this.mImageResourceId = imageResourceId;
         this.mAudioResourceId = audioResourceId;
-
+        // set the flag
         this.HAS_IMAGE = true;
     }
 

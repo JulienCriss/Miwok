@@ -21,7 +21,7 @@ public class Word {
     private int mAudioResourceId;
 
     // Set this flag in order to know if a Word object has an image assigned or not
-    private boolean HAS_IMAGE;
+    private boolean mHasImage;
 
     /**
      * Create a new word object
@@ -35,7 +35,7 @@ public class Word {
         this.mDefaultTranslation = defaultTranslation;
         this.mMiwokTranslation = miwokTranslation;
         this.mAudioResourceId = audioResourceId;
-        this.HAS_IMAGE = false;
+        this.mHasImage = false;
 
     }
 
@@ -55,7 +55,7 @@ public class Word {
         this.mImageResourceId = imageResourceId;
         this.mAudioResourceId = audioResourceId;
         // set the flag
-        this.HAS_IMAGE = true;
+        this.mHasImage = true;
     }
 
     /**
@@ -100,6 +100,6 @@ public class Word {
      * @return Boolean value
      */
     public boolean hasImage() {
-        return this.HAS_IMAGE;
+        return this.mHasImage;
     }
 }

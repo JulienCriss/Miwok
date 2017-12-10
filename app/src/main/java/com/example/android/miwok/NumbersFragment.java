@@ -1,17 +1,24 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ColorsActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class NumbersFragment extends Fragment {
 
     /**
      * Handles playback off all the sound files
@@ -30,7 +37,7 @@ public class ColorsActivity extends AppCompatActivity {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
             // release the mMediaPlayer resource
-            ColorsActivity.this.releaseMediaPlayer();
+            NumbersFragment.this.releaseMediaPlayer();
         }
     };
 
@@ -53,57 +60,70 @@ public class ColorsActivity extends AppCompatActivity {
 
                 // Pause playback and reset player to the start of the file. That way, we can
                 // play the word from the beginning when we resume playback.
-                ColorsActivity.this.mMediaPlayer.pause();
-                ColorsActivity.this.mMediaPlayer.seekTo(0);
+                NumbersFragment.this.mMediaPlayer.pause();
+                NumbersFragment.this.mMediaPlayer.seekTo(0);
 
             } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
                 // Here we will return resuming playback
-                ColorsActivity.this.mMediaPlayer.start();
+                NumbersFragment.this.mMediaPlayer.start();
 
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                 // The AUDIOFOCUS_LOSS case means that we've lost audio focus and stop the
                 // playback and clean up resources
-                ColorsActivity.this.releaseMediaPlayer();
+                NumbersFragment.this.releaseMediaPlayer();
             }
 
         }
     };
 
+
+    public NumbersFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
 
         // Create and setup the {@link AudioManager} to request audio focus
-        this.mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        this.mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+
+        // Create an ArrayList with the words in default translation and Miwok translation
 
         final ArrayList<Word> wordsArray = new ArrayList<>();
+        wordsArray.add(new Word("one", "lutti",
+                R.drawable.number_one, R.raw.number_one));
+        wordsArray.add(new Word("two", "otiiko",
+                R.drawable.number_two, R.raw.number_two));
+        wordsArray.add(new Word("three", "tolookosu",
+                R.drawable.number_three, R.raw.number_three));
+        wordsArray.add(new Word("four", "oyyisa",
+                R.drawable.number_four, R.raw.number_four));
+        wordsArray.add(new Word("five", "massokka",
+                R.drawable.number_five, R.raw.number_five));
+        wordsArray.add(new Word("six", "temmokka",
+                R.drawable.number_six, R.raw.number_six));
+        wordsArray.add(new Word("seven", "kenekaku",
+                R.drawable.number_seven, R.raw.number_seven));
+        wordsArray.add(new Word("eight", "kawinta",
+                R.drawable.number_eight, R.raw.number_eight));
+        wordsArray.add(new Word("nine", "wo'e",
+                R.drawable.number_nine, R.raw.number_nine));
+        wordsArray.add(new Word("ten", "na'aacha",
+                R.drawable.number_ten, R.raw.number_ten));
 
-        wordsArray.add(new Word("red", "weṭeṭṭi",
-                R.drawable.color_red, R.raw.color_red));
-        wordsArray.add(new Word("green", "chokokki",
-                R.drawable.color_green, R.raw.color_green));
-        wordsArray.add(new Word("brown", "ṭakaakki",
-                R.drawable.color_brown, R.raw.color_brown));
-        wordsArray.add(new Word("gray", "ṭopoppi",
-                R.drawable.color_gray, R.raw.color_gray));
-        wordsArray.add(new Word("black", "kululli",
-                R.drawable.color_black, R.raw.color_black));
-        wordsArray.add(new Word("white", "kelelli",
-                R.drawable.color_white, R.raw.color_white));
-        wordsArray.add(new Word("dusty yellow", "ṭopiisә",
-                R.drawable.color_dusty_yellow, R.raw.color_dusty_yellow));
-        wordsArray.add(new Word("mustard yellow", "chiwiiṭә",
-                R.drawable.color_mustard_yellow, R.raw.color_mustard_yellow));
 
         // Create an WordAdapter in oder to use view recycling to optimize memory
-        WordAdapter adapter = new WordAdapter(this, wordsArray, R.color.category_colors);
+        WordAdapter adapter = new WordAdapter(getActivity(), wordsArray, R.color.category_numbers);
 
-        // Get the List view from our app
-        ListView listView = findViewById(R.id.list);
+        // Get the ListView from our app
+        ListView listView = rootView.findViewById(R.id.list);
 
         // Attach the adapter to our ListView
         listView.setAdapter(adapter);
+
 
         // Attach a listener to play the correct sound for each item whens is clicked
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -112,14 +132,14 @@ public class ColorsActivity extends AppCompatActivity {
 
                 // Release the mMediaPlayer resource because we are about to play a different
                 // sound file
-                ColorsActivity.this.releaseMediaPlayer();
+                NumbersFragment.this.releaseMediaPlayer();
 
                 // Get the word object
                 Word currentWord = wordsArray.get(position);
                 int audioFile = currentWord.getAudioResourceId();
 
                 // Request audio focus for playback
-                int result = ColorsActivity.this.mAudioManager.requestAudioFocus(ColorsActivity
+                int result = NumbersFragment.this.mAudioManager.requestAudioFocus(NumbersFragment
                                 .this.mOnAudioFocusChangeListener,
                         // Use the music stream
                         AudioManager.STREAM_MUSIC,
@@ -131,22 +151,23 @@ public class ColorsActivity extends AppCompatActivity {
 
                     // Create and setup the mMediaPlayer for the audio resource associated with the
                     // current word
-                    ColorsActivity.this.mMediaPlayer = MediaPlayer.create(ColorsActivity.this,
-                            audioFile);
+                    NumbersFragment.this.mMediaPlayer = MediaPlayer.create(getActivity(), audioFile);
 
                     // Start the audio file
                     mMediaPlayer.start();
 
                     // Setup a listener on the media player, so that we can stop and release
                     // the media player once the sound has finish
-                    mMediaPlayer.setOnCompletionListener(ColorsActivity.this.mCompletionListener);
+                    mMediaPlayer.setOnCompletionListener(NumbersFragment.this.mCompletionListener);
                 }
             }
         });
+
+        return rootView;
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         // When the activity is stopped, release the media player resource because we won't
         // be playing any more sounds
@@ -172,4 +193,5 @@ public class ColorsActivity extends AppCompatActivity {
             this.mAudioManager.abandonAudioFocus(this.mOnAudioFocusChangeListener);
         }
     }
+
 }

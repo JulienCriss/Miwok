@@ -1,17 +1,24 @@
 package com.example.android.miwok;
 
+
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class FamilyActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PhrasesFragment extends Fragment {
 
     /**
      * Handles playback off all the sound files
@@ -30,7 +37,7 @@ public class FamilyActivity extends AppCompatActivity {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
             // release the mMediaPlayer resource
-            FamilyActivity.this.releaseMediaPlayer();
+            PhrasesFragment.this.releaseMediaPlayer();
         }
     };
 
@@ -53,60 +60,65 @@ public class FamilyActivity extends AppCompatActivity {
 
                 // Pause playback and reset player to the start of the file. That way, we can
                 // play the word from the beginning when we resume playback.
-                FamilyActivity.this.mMediaPlayer.pause();
-                FamilyActivity.this.mMediaPlayer.seekTo(0);
+                PhrasesFragment.this.mMediaPlayer.pause();
+                PhrasesFragment.this.mMediaPlayer.seekTo(0);
 
             } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
                 // Here we will return resuming playback
-                FamilyActivity.this.mMediaPlayer.start();
+                PhrasesFragment.this.mMediaPlayer.start();
 
             } else if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
                 // The AUDIOFOCUS_LOSS case means that we've lost audio focus and stop the
                 // playback and clean up resources
-                FamilyActivity.this.releaseMediaPlayer();
+                PhrasesFragment.this.releaseMediaPlayer();
             }
 
         }
     };
 
+    public PhrasesFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_list);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.word_list, container, false);
 
         // Create and setup the {@link AudioManager} to request audio focus
-        this.mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        this.mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
         // Create an ArrayList with the words in default translation and Miwok translation
         final ArrayList<Word> wordsArray = new ArrayList<>();
 
-        wordsArray.add(new Word("father", "әpә",
-                R.drawable.family_father, R.raw.family_father));
-        wordsArray.add(new Word("mother", "әṭa",
-                R.drawable.family_mother, R.raw.family_mother));
-        wordsArray.add(new Word("son", "angsi",
-                R.drawable.family_son, R.raw.family_son));
-        wordsArray.add(new Word("daughter", "tune",
-                R.drawable.family_daughter, R.raw.family_daughter));
-        wordsArray.add(new Word("older brother", "taachi",
-                R.drawable.family_older_brother, R.raw.family_older_brother));
-        wordsArray.add(new Word("younger brother", "chalitti",
-                R.drawable.family_younger_brother, R.raw.family_younger_brother));
-        wordsArray.add(new Word("older sister", "teṭe",
-                R.drawable.family_older_sister, R.raw.family_older_sister));
-        wordsArray.add(new Word("younger sister", "kolliti",
-                R.drawable.family_younger_sister, R.raw.family_younger_sister));
-        wordsArray.add(new Word("grandmother", "ama",
-                R.drawable.family_grandmother, R.raw.family_grandmother));
-        wordsArray.add(new Word("grandfather", "paapa",
-                R.drawable.family_grandfather, R.raw.family_grandfather));
+        wordsArray.add(new Word("Where are you going?",
+                "minto wuksus", R.raw.phrase_where_are_you_going));
+        wordsArray.add(new Word("What is your name?",
+                "tinnә oyaase'nә", R.raw.phrase_what_is_your_name));
+        wordsArray.add(new Word("My name is...",
+                "oyaaset...", R.raw.phrase_my_name_is));
+        wordsArray.add(new Word("How are you feeling?",
+                "michәksәs?", R.raw.phrase_how_are_you_feeling));
+        wordsArray.add(new Word("I’m feeling good.",
+                "kuchi achit", R.raw.phrase_im_feeling_good));
+        wordsArray.add(new Word("Are you coming?",
+                "temmokka", R.raw.phrase_are_you_coming));
+        wordsArray.add(new Word("Yes, I’m coming.",
+                "әәnәs'aa?", R.raw.phrase_yes_im_coming));
+        wordsArray.add(new Word("I’m coming.",
+                "hәә’ әәnәm", R.raw.phrase_im_coming));
+        wordsArray.add(new Word("Let’s go.", "yoowutis",
+                R.raw.phrase_lets_go));
+        wordsArray.add(new Word("Come here.", "әnni'nem",
+                R.raw.phrase_come_here));
 
 
         // Create an WordAdapter in oder to use view recycling to optimize memory
-        WordAdapter adapter = new WordAdapter(this, wordsArray, R.color.category_family);
+        WordAdapter adapter = new WordAdapter(getActivity(), wordsArray, R.color.category_phrases);
 
         // Get the ListView from our app
-        ListView listView = findViewById(R.id.list);
+        ListView listView = rootView.findViewById(R.id.list);
 
         // Attach the adapter to our ListView
         listView.setAdapter(adapter);
@@ -118,15 +130,14 @@ public class FamilyActivity extends AppCompatActivity {
 
                 // Release the mMediaPlayer resource because we are about to play a different
                 // sound file
-                FamilyActivity.this.releaseMediaPlayer();
+                PhrasesFragment.this.releaseMediaPlayer();
 
                 // Get the word object
                 Word currentWord = wordsArray.get(position);
                 int audioFile = currentWord.getAudioResourceId();
 
-
                 // Request audio focus for playback
-                int result = FamilyActivity.this.mAudioManager.requestAudioFocus(FamilyActivity
+                int result = PhrasesFragment.this.mAudioManager.requestAudioFocus(PhrasesFragment
                                 .this.mOnAudioFocusChangeListener,
                         // Use the music stream
                         AudioManager.STREAM_MUSIC,
@@ -138,7 +149,7 @@ public class FamilyActivity extends AppCompatActivity {
 
                     // Create and setup the mMediaPlayer for the audio resource associated with the
                     // current word
-                    FamilyActivity.this.mMediaPlayer = MediaPlayer.create(FamilyActivity.this,
+                    PhrasesFragment.this.mMediaPlayer = MediaPlayer.create(getActivity(),
                             audioFile);
 
                     // Start the audio file
@@ -146,14 +157,16 @@ public class FamilyActivity extends AppCompatActivity {
 
                     // Setup a listener on the media player, so that we can stop and release
                     // the media player once the sound has finish
-                    mMediaPlayer.setOnCompletionListener(FamilyActivity.this.mCompletionListener);
+                    mMediaPlayer.setOnCompletionListener(PhrasesFragment.this.mCompletionListener);
                 }
             }
         });
+
+        return rootView;
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
         // When the activity is stopped, release the media player resource because we won't
         // be playing any more sounds
@@ -179,4 +192,5 @@ public class FamilyActivity extends AppCompatActivity {
             this.mAudioManager.abandonAudioFocus(this.mOnAudioFocusChangeListener);
         }
     }
+
 }
